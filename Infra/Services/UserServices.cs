@@ -5,20 +5,28 @@ using Microsoft.AspNetCore.Identity;
 namespace Danger_Money;
 
 public class UserServices(
-    UserManager<IdentityUser> userManager,
-    SignInManager<IdentityUser> signInManager
+    UserManager<ApplicationUser> userManager,
+    SignInManager<ApplicationUser> signInManager
 ) : IUserServices
 {
     public async Task<Response<bool>> Login(LoginDTO loginDTO)
     {
         try
         {
+            var user = await userManager.FindByEmailAsync(loginDTO.Email);
+
+            if (user == null)
+                return new Response<bool>(404, "Incorrect Password or Email", false);
+
             var result = await signInManager.PasswordSignInAsync(
-                loginDTO.Email,
+                user,
                 loginDTO.Password,
                 loginDTO.RememberMe,
                 lockoutOnFailure: true
             );
+
+            if (result.Succeeded)
+                return new Response<bool>(200, "Logged successfully", true);
 
             if (result.IsLockedOut)
                 return new Response<bool>(400, "maximum login attempts reached", false);
@@ -53,9 +61,10 @@ public class UserServices(
             if (registerDTO.Password != registerDTO.ConfirmPassword)
                 return new Response<bool>(400, "Password are different", false);
 
-            var user = new IdentityUser
+            var user = new ApplicationUser
             {
-                UserName = registerDTO.Name,
+                Name = registerDTO.Name,
+                UserName = registerDTO.Email,
                 Email = registerDTO.Email,
             };
 

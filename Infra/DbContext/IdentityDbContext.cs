@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Danger_Money;
 
-public class IdentityDbContext(DbContextOptions options) : IdentityDbContext<IdentityUser>(options)
+public class IdentityDbContext(DbContextOptions options) : IdentityDbContext<ApplicationUser>(options)
 {
 
 }

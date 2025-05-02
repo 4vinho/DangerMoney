@@ -5,13 +5,16 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//
+builder.Services.AddScoped<IUserServices, UserServices>();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 //Identity
 builder.Services
-    .AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<IdentityDbContext<IdentityUser>>();
+    .AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<IdentityDbContext<ApplicationUser>>();
 
 builder.Services.AddAuthorization();
 
@@ -20,7 +23,7 @@ builder.Services.AddAuthorization();
 //DB
 builder.Services.AddDbContext<RepositoryDbContext>(options => options
     .UseSqlServer(builder.Configuration.GetSection("ConnectionStrings:RepositoryDB").Value));
-builder.Services.AddDbContext<IdentityDbContext<IdentityUser>>(options => options
+builder.Services.AddDbContext<IdentityDbContext<ApplicationUser>>(options => options
     .UseSqlServer(builder.Configuration.GetSection("ConnectionStrings:IdentityDB").Value));
 
 //Swagger
