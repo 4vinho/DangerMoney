@@ -1,3 +1,4 @@
+using AutoMapper;
 using Danger_Money;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 //
 builder.Services.AddScoped<IUserServices, UserServices>();
+builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -30,7 +32,14 @@ builder.Services.AddDbContext<IdentityDbContext<ApplicationUser>>(options => opt
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//Mapper
+var config = new MapperConfiguration(cfg =>
+{
+    cfg.CreateMap<Expense, ExpenseDTO>().ReverseMap();
+});
 
+var mapper = config.CreateMapper();
+builder.Services.AddSingleton(mapper);
 
 
 //________________________________________________________
