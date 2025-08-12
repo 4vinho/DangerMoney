@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Danger_Money.Models.DTOs;
 
 namespace Danger_Money;
 
@@ -8,6 +9,23 @@ public class ExpenseRepository(
     IMapper mapper
 ) : IExpenseRepository
 {
+    public async Task<Response<ExpenseDTO?>> GetByIdAsync(int id)
+    {
+        try
+        {
+            var expense = await context.Expenses.FirstOrDefaultAsync(x => x.Id == id);
+            if (expense == null)
+                return new Response<ExpenseDTO?>(404, "Expense not found", null);
+
+            var expenseDTO = mapper.Map<ExpenseDTO>(expense);
+            return new Response<ExpenseDTO?>(200, "Expense retrieved successfully", expenseDTO);
+        }
+        catch (Exception ex)
+        {
+            return new Response<ExpenseDTO?>(500, $"Internal Error: {ex.Message}", null);
+        }
+    }
+
     public async Task<Response<bool?>> DeleteAsync(int id)
     {
         try
@@ -132,6 +150,83 @@ public class ExpenseRepository(
         catch (Exception ex)
         {
             return new Response<ExpenseDTO?>(500, $"Internal Error: {ex.Message}", null);
+        }
+    }
+
+    public async Task<Response<IEnumerable<ExpenseCategoryStatsDTO>>> GetExpenseCategoryStatsAsync()
+    {
+        try
+        {
+            var stats = await context.Expenses
+                .GroupBy(e => e.Type)
+                .Select(g => new ExpenseCategoryStatsDTO
+                {
+                    CategoryName = g.Key.ToString(), // Convert enum to string
+                    TotalAmount = g.Sum(e => e.Amount)
+                })
+                .ToListAsync();
+
+            return new Response<IEnumerable<ExpenseCategoryStatsDTO>>(200, "Expense category stats retrieved successfully", stats);
+        }
+        catch (Exception ex)
+        {
+            return new Response<IEnumerable<ExpenseCategoryStatsDTO>>(500, $"Internal Error: {ex.Message}", null);
+        }
+    }
+
+    public async Task<Response<IEnumerable<MonthlyExpenseTrendDTO>>> GetMonthlyExpenseTrendAsync(int months = 6)
+    {
+        try
+        {
+            var endDate = DateTime.Now;
+            var startDate = endDate.AddMonths(-months).Date;
+
+            var trendData = (await context.Expenses
+                .Where(e => e.Date >= startDate && e.Date <= endDate)
+                .GroupBy(e => new { e.Date.Year, e.Date.Month })
+                .Select(g => new
+                {
+                    Year = g.Key.Year,
+                    Month = g.Key.Month,
+                    TotalAmount = g.Sum(e => e.Amount)
+                })
+                .ToListAsync()) // Bring data to client
+                .Select(x => new MonthlyExpenseTrendDTO
+                {
+                    MonthYear = $"{x.Month}/{x.Year}",
+                    TotalAmount = x.TotalAmount
+                })
+                .OrderBy(x => x.MonthYear) // Order by month/year for chronological display
+                .ToList();
+
+            return new Response<IEnumerable<MonthlyExpenseTrendDTO>>(200, "Monthly expense trend retrieved successfully", trendData);
+        }
+        catch (Exception ex)
+        {
+            return new Response<IEnumerable<MonthlyExpenseTrendDTO>>(500, $"Internal Error: {ex.Message}", null);
+        }
+    }
+
+    public async Task<Response<IEnumerable<TopExpenseDTO>>> GetTopExpensesAsync(int count = 5)
+    {
+        try
+        {
+            var topExpenses = (await context.Expenses
+                .ToListAsync()) // Bring all expenses to client
+                .OrderByDescending(e => e.Amount)
+                .Take(count)
+                .Select(e => new TopExpenseDTO
+                {
+                    Name = e.Name,
+                    Amount = e.Amount
+                })
+                .ToList();
+
+            return new Response<IEnumerable<TopExpenseDTO>>(200, "Top expenses retrieved successfully", topExpenses);
+        }
+        catch (Exception ex)
+        {
+            return new Response<IEnumerable<TopExpenseDTO>>(500, $"Internal Error: {ex.Message}", null);
         }
     }
 }

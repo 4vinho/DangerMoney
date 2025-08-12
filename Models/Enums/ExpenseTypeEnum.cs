@@ -1,16 +1,17 @@
-﻿namespace Danger_Money;
+namespace Danger_Money;
 
 public enum ExpenseTypeEnum
 {
-    Alimentacao,
-    Transporte,
-    Moradia,
-    Contas,
-    Educacao,
-    Lazer,
-    Saude,
-    Compras,
+    Aluguel,
+    Salarios,
+    Marketing,
+    Utilidades,
+    Manutencao,
+    Suprimentos,
+    Frete,
     Impostos,
-    Doacoes,
-    Outros 
+    Seguros,
+    Viagens,
+    Comissoes,
+    Outros
 }

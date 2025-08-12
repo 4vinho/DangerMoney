@@ -1,6 +1,7 @@
-﻿@model IEnumerable<ExpenseDTO>
+@model IEnumerable<ExpenseDTO>
 @{
     ViewData["Title"] = "Gastos do Mês";
+    decimal totalExpenses = Model.Sum(e => e.Amount);
 }
 
 <div class="container mt-5">
@@ -11,25 +12,37 @@
         <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
     }
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Descrição</th>
-                <th>Valor</th>
-                <th>Data</th>
-                <th>Tipo</th>
-            </tr>
-        </thead>
-        <tbody>
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Resumo Mensal</h5>
+            <p class="card-text">Total de Gastos: <strong>@totalExpenses.ToString("C")</strong></p>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info" role="alert">
+            Nenhum gasto registrado para este mês.
+        </div>
+    }
+    else
+    {
+        <div class="row">
             @foreach (var item in Model)
             {
-                <tr>
-                    <td>@item.Name</td>
-                    <td>@item.Amount.ToString("C")</td>
-                    <td>@item.Date.ToString("dd/MM/yyyy")</td>
-                    <td>@item.Type</td>
-                </tr>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Name</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">@item.Type</h6>
+                            <p class="card-text">
+                                Valor: <strong>@item.Amount.ToString("C")</strong><br />
+                                Data: @item.Date.ToString("dd/MM/yyyy")
+                            </p>
+                        </div>
+                    </div>
+                </div>
             }
-        </tbody>
-    </table>
+        </div>
+    }
 </div>

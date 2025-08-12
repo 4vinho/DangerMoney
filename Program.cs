@@ -3,6 +3,7 @@ using Danger_Money;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Danger_Money.Infra.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,9 +25,9 @@ builder.Services.AddAuthorization();
 
 //DB
 builder.Services.AddDbContext<RepositoryDbContext>(options => options
-    .UseSqlServer(builder.Configuration.GetSection("ConnectionStrings:RepositoryDB").Value));
+    .UseSqlite("Data Source=Repository.db"));
 builder.Services.AddDbContext<IdentityDbContext<ApplicationUser>>(options => options
-    .UseSqlServer(builder.Configuration.GetSection("ConnectionStrings:IdentityDB").Value));
+    .UseSqlite("Data Source=Identity.db"));
 
 //Swagger
 builder.Services.AddEndpointsApiExplorer();
@@ -44,6 +45,14 @@ builder.Services.AddSingleton(mapper);
 
 //________________________________________________________
 var app = builder.Build();
+
+// Seed data
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<RepositoryDbContext>();
+    await DataSeeder.SeedExpensesAsync(context);
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -63,12 +72,12 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapStaticAssets();
+app.UseStaticFiles();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+    
 
 
 app.Run();

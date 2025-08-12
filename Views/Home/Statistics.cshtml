@@ -1,0 +1,170 @@
+@model Danger_Money.Models.ViewModels.StatisticsViewModel
+@using Danger_Money.Models.DTOs;
+@{
+    ViewData["Title"] = "Estatísticas de Gastos";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">@ViewData["Title"]</h2>
+
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">Gastos por Categoria</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.CategoryStats != null && Model.CategoryStats.Any())
+                        {
+                            <canvas id="categoryChart"></canvas>
+                        }
+                        else
+                        {
+                            <div class="alert alert-info">Nenhum dado de gasto por categoria encontrado.</div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Tendência Mensal de Gastos</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.MonthlyTrend != null && Model.MonthlyTrend.Any())
+                        {
+                            <canvas id="monthlyTrendChart"></canvas>
+                        }
+                        else
+                        {
+                            <div class="alert alert-info">Nenhum dado de tendência mensal encontrado.</div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-warning text-white">
+                        <h5 class="mb-0">Top 5 Maiores Gastos</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.TopExpenses != null && Model.TopExpenses.Any())
+                        {
+                            <canvas id="topExpensesChart"></canvas>
+                        }
+                        else
+                        {
+                            <div class="alert alert-info">Nenhum dado de maiores gastos encontrado.</div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Chart 1: Gastos por Categoria
+            var categoryStats = @Html.Raw(Json.Serialize(Model.CategoryStats));
+            if (categoryStats && categoryStats.length > 0) {
+                var categoryLabels = categoryStats.map(item => item.categoryName);
+                var categoryData = categoryStats.map(item => item.totalAmount);
+                var categoryCtx = document.getElementById('categoryChart').getContext('2d');
+                new Chart(categoryCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: categoryLabels,
+                        datasets: [{
+                            label: 'Total Gasto (R$)',
+                            data: categoryData,
+                            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { beginAtZero: true, title: { display: true, text: 'Valor (R$)' } },
+                            x: { title: { display: true, text: 'Categoria' } }
+                        },
+                        plugins: { title: { display: true, text: 'Distribuição de Gastos por Categoria' } }
+                    }
+                });
+            }
+
+            // Chart 2: Tendência Mensal de Gastos
+            var monthlyTrend = @Html.Raw(Json.Serialize(Model.MonthlyTrend));
+            if (monthlyTrend && monthlyTrend.length > 0) {
+                var monthlyLabels = monthlyTrend.map(item => item.monthYear);
+                var monthlyData = monthlyTrend.map(item => item.totalAmount);
+                var monthlyCtx = document.getElementById('monthlyTrendChart').getContext('2d');
+                new Chart(monthlyCtx, {
+                    type: 'line',
+                    data: {
+                        labels: monthlyLabels,
+                        datasets: [{
+                            label: 'Total Gasto (R$)',
+                            data: monthlyData,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            fill: true,
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { beginAtZero: true, title: { display: true, text: 'Valor (R$)' } },
+                            x: { title: { display: true, text: 'Mês/Ano' } }
+                        },
+                        plugins: { title: { display: true, text: 'Tendência Mensal de Gastos' } }
+                    }
+                });
+            }
+
+            // Chart 3: Top 5 Maiores Gastos
+            var topExpenses = @Html.Raw(Json.Serialize(Model.TopExpenses));
+            if (topExpenses && topExpenses.length > 0) {
+                var topLabels = topExpenses.map(item => item.name);
+                var topData = topExpenses.map(item => item.amount);
+                var topCtx = document.getElementById('topExpensesChart').getContext('2d');
+                new Chart(topCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: topLabels,
+                        datasets: [{
+                            label: 'Valor (R$)',
+                            data: topData,
+                            backgroundColor: 'rgba(255, 159, 64, 0.6)',
+                            borderColor: 'rgba(255, 159, 64, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y', // Make it a horizontal bar chart
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: { beginAtZero: true, title: { display: true, text: 'Valor (R$)' } },
+                            y: { title: { display: true, text: 'Despesa' } }
+                        },
+                        plugins: { title: { display: true, text: 'Top 5 Maiores Gastos' } }
+                    }
+                });
+            }
+        });
+    </script>
+}

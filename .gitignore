@@ -1,0 +1,49 @@
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Bb]in/
+[Oo]bj/
+
+# NuGet
+.nuget/
+packages/
+*.nupkg
+*.snupkg
+*.cache
+*.log
+
+# Rider
+.idea/
+
+# Resharper
+*.DotSettings
+*.DotSettings.user
+
+# SQL Server files
+*.mdf
+*.ldf
+
+# SQLite database files
+*.db
+*.db-shm
+*.db-wal
+
+# Azure WebSites
+_PublishedWebsites/
+
+# Project files
+*.csproj.user
+*.resharper
+*.resharper.user
+
+# Miscellaneous
+[Tt]humbs.db
+[Dd]esktop.ini
+
+# User secrets
+appsettings.Development.json

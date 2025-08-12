@@ -1,0 +1,38 @@
+@model ExpenseDTO
+@{
+    ViewData["Title"] = "Excluir Despesa";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="mb-0">@ViewData["Title"]</h3>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Tem certeza que deseja excluir esta despesa?</h5>
+                    <dl class="row">
+                        <dt class="col-sm-4">Nome:</dt>
+                        <dd class="col-sm-8">@Model.Name</dd>
+
+                        <dt class="col-sm-4">Valor:</dt>
+                        <dd class="col-sm-8">@Model.Amount.ToString("C")</dd>
+
+                        <dt class="col-sm-4">Data:</dt>
+                        <dd class="col-sm-8">@Model.Date.ToString("dd/MM/yyyy")</dd>
+
+                        <dt class="col-sm-4">Tipo:</dt>
+                        <dd class="col-sm-8">@Model.Type</dd>
+                    </dl>
+
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" asp-for="Id" />
+                        <button type="submit" class="btn btn-danger">Excluir</button>
+                        <a asp-action="Index" class="btn btn-secondary ms-2">Cancelar</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

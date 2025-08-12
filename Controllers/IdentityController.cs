@@ -1,7 +1,7 @@
 using Danger_Money;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MyApp.Namespace
+namespace Danger_Money
 {
     public class IdentityController(
         IUserServices userServices
@@ -16,7 +16,7 @@ namespace MyApp.Namespace
             {
                 var response = await userServices.Login(loginDTO);
 
-                Console.WriteLine(response.ToString());
+
 
                 if (response.IsSuccess)
                 {
@@ -36,7 +36,7 @@ namespace MyApp.Namespace
             {
                 var response = await userServices.Register(registerDTO);
 
-                Console.WriteLine(response.ToString());
+
 
                 if (response.IsSuccess)
                 {
@@ -61,6 +61,13 @@ namespace MyApp.Namespace
         public IActionResult Register()
         {
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await userServices.Logout(); // Assuming IUserServices has a Logout method
+            return RedirectToAction("Index", "Home");
         }
     }
 }
