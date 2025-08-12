@@ -15,14 +15,14 @@
     {
         <div class="row">
             <div class="col-md-6 mb-4">
-                <div class="card shadow-sm h-100">
+                <div class="card shadow-sm h-100 glassmorphism-card">
                     <div class="card-header bg-info text-white">
                         <h5 class="mb-0">Gastos por Categoria</h5>
                     </div>
                     <div class="card-body">
                         @if (Model.CategoryStats != null && Model.CategoryStats.Any())
                         {
-                            <canvas id="categoryChart"></canvas>
+                            <canvas id="categoryChart" style="height: 400px;"></canvas>
                         }
                         else
                         {
@@ -33,14 +33,14 @@
             </div>
 
             <div class="col-md-6 mb-4">
-                <div class="card shadow-sm h-100">
+                <div class="card shadow-sm h-100 glassmorphism-card">
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0">Tendência Mensal de Gastos</h5>
                     </div>
                     <div class="card-body">
                         @if (Model.MonthlyTrend != null && Model.MonthlyTrend.Any())
                         {
-                            <canvas id="monthlyTrendChart"></canvas>
+                            <canvas id="monthlyTrendChart" style="height: 400px;"></canvas>
                         }
                         else
                         {
@@ -51,14 +51,14 @@
             </div>
 
             <div class="col-md-12 mb-4">
-                <div class="card shadow-sm h-100">
+                <div class="card shadow-sm h-100 glassmorphism-card">
                     <div class="card-header bg-warning text-white">
                         <h5 class="mb-0">Top 5 Maiores Gastos</h5>
                     </div>
                     <div class="card-body">
                         @if (Model.TopExpenses != null && Model.TopExpenses.Any())
                         {
-                            <canvas id="topExpensesChart"></canvas>
+                            <canvas id="topExpensesChart" style="height: 400px;"></canvas>
                         }
                         else
                         {

@@ -12,7 +12,7 @@
         <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
     }
 
-    <div class="card mb-4">
+    <div class="card mb-4 glassmorphism-card">
         <div class="card-body">
             <h5 class="card-title">Resumo Mensal</h5>
             <p class="card-text">Total de Gastos: <strong>@totalExpenses.ToString("C")</strong></p>
@@ -31,10 +31,10 @@
             @foreach (var item in Model)
             {
                 <div class="col-md-4 mb-4">
-                    <div class="card h-100">
+                    <div class="card h-100 glassmorphism-card">
                         <div class="card-body">
                             <h5 class="card-title">@item.Name</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">@item.Type</h6>
+                            <h6 class="card-subtitle mb-2"><span class="badge bg-secondary">@item.Type</span></h6>
                             <p class="card-text">
                                 Valor: <strong>@item.Amount.ToString("C")</strong><br />
                                 Data: @item.Date.ToString("dd/MM/yyyy")
