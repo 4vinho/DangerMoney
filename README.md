@@ -1,6 +1,12 @@
 # Danger Money
 
-This is a personal finance management application to track your expenses.
+## English
+
+Danger Money is a robust financial management application designed to help retail businesses track and analyze their expenses efficiently. It provides tools for categorizing expenditures, visualizing spending trends, and managing user access.
+
+## Portuguese (Português)
+
+Danger Money é uma aplicação robusta de gestão financeira projetada para ajudar empresas de varejo a rastrear e analisar suas despesas de forma eficiente. Ela oferece ferramentas para categorizar gastos, visualizar tendências de despesas e gerenciar o acesso de usuários.
 
 ## Features
 
