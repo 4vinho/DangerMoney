@@ -84,11 +84,3 @@ If you encounter issues with the database and need to start fresh, you can manua
 3.  **Add Expenses:** Navigate to the "Gastos" section to add new expenses.
 4.  **View Expenses:** See your monthly expenses overview.
 5.  **Edit/Delete Expenses:** Modify or remove existing expense entries.
-
-## Contributing
-
-(Optional: Add guidelines for contributions if this were an open-source project)
-
-## License
-
-(Optional: Add license information)
